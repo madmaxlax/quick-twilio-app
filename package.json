@@ -2,22 +2,23 @@
   "//1": "describes your app and its dependencies",
   "//2": "https://docs.npmjs.com/files/package.json",
   "//3": "updating this file will download and update your packages",
-  "name": "Twilio App",
+  "name": "Twilio-App",
   "version": "0.0.1",
-  "description": "A simple Node app with SQLite as a database management system, instantly up and running. Works with Twilio",
+  "description": "A simple Node app with SQLite as a database management system, instantly up and running. Works with Twilio to send SMS",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.16.3",
-    "sqlite3": "^4.0.0"
+    "sqlite3": "^4.0.0",
+    "twilio": "^3.17.0"
   },
   "engines": {
     "node": "8.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-sqlite"
+    "url": "https://github.com/madmaxlax/quick-twilio-app"
   },
   "license": "MIT",
   "keywords": [

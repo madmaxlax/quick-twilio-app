@@ -1,6 +1,7 @@
 
 Project: Develop an application to message users via Twilio
-++++
+=====
+
 
 
 Requirements:
@@ -13,6 +14,11 @@ Notes:
 * Please include a README with any setup instructions or other details you would like to share with the reviewers.   
 * Don't feel like you have to toil for days, generally a few hours across a day or two should be PLENTY! 
 
-Find out more [about Glitch](https://glitch.com/about).
+Hosted and available at **[https://quick-twilio-app.glitch.me/](https://quick-twilio-app.glitch.me/)**
+
+
+---
+
+Find out more [about Glitch](https://glitch.com/about) and collaboratively editing and apps and getting them hosted, all live and free.
 
 
