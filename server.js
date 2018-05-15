@@ -4,56 +4,89 @@
 // init project
 var express = require('express');
 var bodyParser = require('body-parser');
+var accountSid = 'ACd90f0be6668fbcae6bd3d4e4ff9449bf'; // Your Account SID from www.twilio.com/console
+//var accountSid = 'ACa37308cbc12fecbd022755ca4d296b02'; // test account
+
+var authToken = '0335ce272181c32360ff585786a0a46a';   // Your Auth Token from www.twilio.com/console
+//var authToken = '183efed626b330338ac503df366ca1c0';   // test
+var twilio = require('twilio');
+var client = new twilio(accountSid, authToken);
+const util = require('util');
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// we've started you off with Express, 
-// but feel free to use whatever libs or frameworks you'd like through `package.json`.
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
-// init sqlite db
-var fs = require('fs');
-var dbFile = './.data/sqlite.db';
-var exists = fs.existsSync(dbFile);
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(dbFile);
+//routes and route files
+var dbSetup = require('./db-setup.js');
+var userRequests = require('./user.js');
 
-// if ./.data/sqlite.db does not exist, create it, otherwise print records to console
-db.serialize(function(){
-  if (!exists) {
-    db.run('CREATE TABLE Dreams (dream TEXT)');
-    console.log('New table Dreams created!');
-    
-    // insert default dreams
-    db.serialize(function() {
-      db.run('INSERT INTO Dreams (dream) VALUES ("Find and count some sheep"), ("Climb a really tall mountain"), ("Wash the dishes")');
-    });
-  }
-  else {
-    console.log('Database "Dreams" ready to go!');
-    db.each('SELECT * from Dreams', function(err, row) {
-      if ( row ) {
-        console.log('record:', row);
-      }
-    });
-  }
-});
+app.use('/resettables', dbSetup);
+app.use('/user', userRequests);
+
+
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
+  console.log('home page');
   response.sendFile(__dirname + '/views/index.html');
 });
 
-// endpoint to get all the dreams in the database
-// currently this is the only endpoint, ie. adding dreams won't update the database
-// read the sqlite3 module docs and try to add your own! https://www.npmjs.com/package/sqlite3
-app.get('/getDreams', function(request, response) {
-  db.all('SELECT * from Dreams', function(err, rows) {
-    response.send(JSON.stringify(rows));
-  });
+// main function, sends messages with Twilio
+app.post('/sendmessage', function(request, response) {
+  
+  //one option would be to require user_ids for the message sending but let's just do numbers
+  console.log(util.inspect(request.body, false, null));
+  
+  if(request.body.MobilePhone != null && request.body.MessageBody != null){
+    var phones = request.body.MobilePhone.split(',');
+    console.log('attempting to send '+ phones.lenght+' message(s)');
+    phones.forEach(function(MobilePhone){
+      //send the actual message
+      client.messages.create({
+          body: request.body.MessageBody,
+          to: MobilePhone,  // Text this number
+          from: '+19192136533' // From our Twilio number
+      }, function(err, result) {
+        if(err != null){
+          console.log('error sending message', util.inspect(err, false, null));
+          response.json({error:err});
+        }
+        else{
+          console.log('message sent!');
+          response.json({messagesid:result.sid});
+        }
+      });
+      
+    });
+  }
+  else
+  {
+    //improper body sent
+      response.status(400).json({Error: "your request "+util.inspect(request.body, false, null)+" was not set up properly, see example of what's required. (note: it needs to be POST'ed as x-www-form-urlencoded data)", 
+       RequiredBody:{
+        "MobilePhone": "+1410.... Note: this can also be an array []",
+        "MessageBody": "Hello world SMS"
+      }});
+  }
 });
+// function sendMessage(MobilePhone,body){
+//  client.messages.create({
+//           body: body,
+//           to: MobilePhone,  // Text this number
+//           from: '+19192136533' // From a valid Twilio number
+//       })
+//       .then(function(message){
+//         console.log('message sent!');
+//         response.json({messagesid:message.sid});
+//       }).catch(function(error){
+//         console.log('error sending message', util.inspect(error, false, null));
+//       }).done(function(shruggie){
+//         console.log('i guess we\'re done?');
+//       }); 
+// }
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {

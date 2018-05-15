@@ -1,59 +1,187 @@
-<!-- This is a static file -->
-<!-- served from your routes in server.js -->
-
-<!-- You might want to try something fancier: -->
-<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
-<!-- pug: https://pugjs.org/ -->
-<!-- haml: http://haml.info/ -->
-<!-- hbs(handlebars): http://handlebarsjs.com/ -->
-
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Welcome to Glitch!</title>
-    <meta name="description" content="A cool thing made with Glitch">
-    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en" ng-app="myapp" ng-controller="appController as ctrlr">
 
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css">
-  </head>
-  <body>
-    <header>
-      <h1>
-        A Dream of the Future
-      </h1>
-    </header>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="https://glitch.com/edit/favicon.ico?v=3">
+  <title>RV Assignment User Visits</title>
 
-    <main>
-      <p class="bold">Oh hi,</p>
-      
-      <p>Tell me your hopes and dreams:</p>
-      
-      <form>
-        <input name="dream" type="text" maxlength="100" placeholder="Dreams!" aria-labelledby="submit-dream">
-        <button type="submit" id="submit-dream">Submit Dream</button>
+  <meta name="keywords" content="Site description" />
+  <meta name="description" content="key words" />
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">-->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <link rel="stylesheet" type="text/css" href="./style.css" />
+</head>
+
+<body>
+  <md-toolbar layout="row" class="md-toolbar-tools" ng-cloak layout-align="space-between center">
+    <h1>TW Assignment: Twilio API Users</h1>
+    <md-button class="menu md-icon-button" hide-gt-md ng-click="toggleLeft()" aria-label="Show Nav">
+      <md-icon aria-label="settings" class="material-icons">settings</md-icon>
+    </md-button>
+  </md-toolbar>
+  <div flex layout="row" ng-cloak>
+    <!--main content-->
+    <!-- Side Nav Prefs -->
+    <md-sidenav class="md-sidenav-left" md-is-locked-open="$mdMedia('gt-md')" md-component-id="left">
+      <md-content class="md-padding">
+        <md-list>
+          <md-subheader class="">Menu</md-subheader>
+          
+          <md-divider></md-divider>
+          <md-subheader class="">Debugging</md-subheader>
+          <md-list-item>
+              <md-button class="md-raised md-warn" ng-click="resetDatabase()" aria-label="reset">
+                Reset Database
+                <md-tooltip md-direction="top">Warning, this will reset the tables and delete all visit info</md-tooltip>
+              </md-button>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <md-button type="submit" class="md-raised" href="https://github.com/madmaxlax/quick-twilio-app" target="_blank">
+              <md-icon aria-label="github" class="material-icons">code</md-icon> This on GitHub
+            </md-button>
+          </md-list-item>
+          <md-list-item>
+            <a href="http://maxstruever.com" target="_blank">Max Struever</a>
+          </md-list-item>
+          <md-list-item>
+            <a href="https://glitch.com" target="_blank">Made and hosted with Glitch</a>
+          </md-list-item>
+        </md-list>
+      </md-content>
+    </md-sidenav>
+    <div layout="column" flex>
+      <md-card>
+        <md-card-title>
+          <md-card-title-text>
+            Create Users
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+          <form name="newUserForm" >
+
+        <div layout-gt-xs="row">
+          <md-input-container class="md-block" flex-gt-xs>
+            <label>First Name</label>
+            <input ng-model="newUser.FirstName">
+          </md-input-container>
+
+          <md-input-container class="md-block" flex-gt-xs>
+            <label>Last Name</label>
+            <input ng-model="newUser.LastName">
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-xs>
+            <label>Mobile Phone Number</label>
+            <input ng-model="newUser.MobilePhone">
+          </md-input-container>
+        </div>
+            <md-button type="submit" class="md-raised" ng-disabled="newUser.FirstName == null || newUser.FirstName === ''" ng-click="createUser(newUser.FirstName,newUser.LastName,newUser.MobilePhone)">Create User!</md-button>
+
       </form>
-      
-      <section class="dreams">
-        <ul id="dreams"></ul>
-      </section>
-    </main>
+        </md-card-content>
+        <div ng-show="editUser.user_id">
+          <md-card-title>
+            <md-card-title-text>
+              Edit User
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <form name="editUserForm">
 
-    <footer>
-      Made with <a href="https://glitch.com">Glitch</a>!
-    </footer>
-    
-    
-    <!-- import the webpage's client-side javascript file -->
-    <script src="/client.js"></script>
+          <div layout-gt-xs="row">
+            <md-input-container class="md-block" flex-gt-xs>
+              <label>First Name</label>
+              <input ng-model="editUser.FirstName">
+            </md-input-container>
 
-    <!-- include the Glitch button to show what the webpage is about and
-          to make it easier for folks to view source and remix -->
-    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
-    <script src="https://button.glitch.me/button.js"></script>
+            <md-input-container class="md-block" flex-gt-xs>
+              <label>Last Name</label>
+              <input ng-model="editUser.LastName">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-xs>
+              <label>Mobile Phone Number</label>
+              <input ng-model="editUser.MobilePhone">
+            </md-input-container>
+          </div>
+              <md-button class="md-raised" ng-disabled="editUser.FirstName == null || editUser.FirstName === ''" ng-click="editAUser(editUser.user_id,editUser.FirstName,editUser.LastName,editUser.MobilePhone)">Edit User</md-button>
 
-  </body>
+        </form>
+          </md-card-content>
+        </div>
+        <md-card-content>
+          <md-list>
+            <md-list-item ng-repeat="user in allUsers" ng-click="user.selected = !user.selected" class="noright">
+              <p>{{ user.FirstName }} {{ user.LastName }} -- {{ user.MobilePhone }}</p>
+              <md-checkbox class="md-secondary" ng-model="user.selected"></md-checkbox>
+              <md-icon ng-click="directMessage(user.user_id)" aria-label="Send Message" class="md-secondary md-hue-3 material-icons">message
+                <md-tooltip md-direction="top">Message {{ user.FirstName }} Individually
+                  </md-tooltip></md-icon>
+              <md-icon ng-click="$parent.editUser = user" aria-label="Edit User" class="md-secondary md-hue-3 material-icons">edit
+                <md-tooltip md-direction="top">Edit {{ user.FirstName }}
+                  </md-tooltip></md-icon>
+              <md-icon ng-click="deleteUser(user.user_id)" aria-label="Delete User" class="md-secondary md-hue-3 material-icons">close
+                <md-tooltip md-direction="top">Delete {{ user.FirstName }}
+                  </md-tooltip></md-icon>
+            </md-list-item>
+          </md-list>
+          
+
+        </md-card-content>
+        <md-card-title>
+            <md-card-title-text>
+              Message Users
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <form name="sendMessagesForm">
+
+          <div layout-gt-xs="row">
+            <div flex="25">
+              
+            <md-input-container class="md-block" flex-gt-xs>
+              <label>From</label>
+              <input value="Web App" disabled>
+            </md-input-container>
+
+            </div>
+            <div flex>
+                          <strong>To:</strong> <span ng-repeat="user in allUsers | filter:{selected:true} as selectedUsers">{{user.FirstName}} {{user.MobilePhone}}, </span>
+              
+            </div>
+
+              </div>
+              <div layout="row">
+                <md-input-container flex class="md-block">
+                  <label>Message </label>
+                  <textarea ng-model="messageBody" md-maxlength="160" rows="5" md-select-on-focus></textarea>
+                </md-input-container>
+              </div>
+              
+              <div layout="row">
+                <md-button type="submit" class="md-raised md-primary" ng-disabled="messageBody == null || messageBody === ''" ng-click="sendMessage(selectedUsers,messageBody)">Send {{selectedUsers.length > 1?'group ':''}} Message!</md-button>
+              </div>
+            </form>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!-- <script src="./scripts/bootstrap.min.js"></script> -->
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-resource.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-messages.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  <script src="./client.js"></script>
+</body>
+
 </html>
