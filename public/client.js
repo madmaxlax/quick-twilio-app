@@ -98,7 +98,7 @@
           }).
               //$http.post(, {city:city,state:ST}).
               then(function (data, status, headers, config) {
-            $mdToast.showSimple('Edited user!');
+                $mdToast.showSimple('Edited user!');
                 //re-get all the users
                 $scope.getUsers();
                 //clear the edituser var
@@ -126,7 +126,7 @@
           }).
               //$http.post(, {city:city,state:ST}).
               then(function (data, status, headers, config) {
-            $mdToast.showSimple('Successfully deleted user!');
+                $mdToast.showSimple('Successfully deleted user!');
                 //re-get all the users
                 $scope.getUsers();
 
