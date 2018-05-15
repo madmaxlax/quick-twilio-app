@@ -108,12 +108,15 @@
               <input ng-model="editUser.MobilePhone">
             </md-input-container>
           </div>
-              <md-button class="md-raised" ng-disabled="editUser.FirstName == null || editUser.FirstName === ''" ng-click="editAUser(editUser.user_id,editUser.FirstName,editUser.LastName,editUser.MobilePhone)">Edit User</md-button>
+              <md-button class="md-raised" type="submit" ng-disabled="editUser.FirstName == null || editUser.FirstName === ''" ng-click="editAUser(editUser.user_id,editUser.FirstName,editUser.LastName,editUser.MobilePhone)">Edit User</md-button>
 
         </form>
           </md-card-content>
         </div>
         <md-card-content>
+          <p>
+            Click users to select them and send messages to multiple users. Or click the direct message icon and send a message just to that user.
+          </p>
           <md-list>
             <md-list-item ng-repeat="user in allUsers" ng-click="user.selected = !user.selected" class="noright">
               <p>{{ user.FirstName }} {{ user.LastName }} -- {{ user.MobilePhone }}</p>
