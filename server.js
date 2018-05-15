@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 var accountSid = 'ACd90f0be6668fbcae6bd3d4e4ff9449bf'; // Your Account SID from www.twilio.com/console
 //var accountSid = 'ACa37308cbc12fecbd022755ca4d296b02'; // test account
 
-var authToken = '0335ce272181c32360ff585786a0a46a';   // Your Auth Token from www.twilio.com/console
-//var authToken = '183efed626b330338ac503df366ca1c0';   // test
+var authToken = process.env.SECRET;   // Your Auth Token from www.twilio.com/console
+//var authToken = process.env.SECRET;   // test
 var twilio = require('twilio');
 var client = new twilio(accountSid, authToken);
 const util = require('util');
