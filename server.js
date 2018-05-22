@@ -42,7 +42,7 @@ app.post('/sendmessage', function(request, response) {
   
   if(request.body.MobilePhone != null && request.body.MessageBody != null){
     var phones = request.body.MobilePhone.split(',');
-    console.log('attempting to send '+ phones.lenght+' message(s)');
+    console.log('attempting to send '+ phones.length+' message(s)');
     phones.forEach(function(MobilePhone){
       //send the actual message
       client.messages.create({
